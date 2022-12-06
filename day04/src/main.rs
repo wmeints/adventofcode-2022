@@ -16,7 +16,6 @@ impl SectionRange {
     }
 }
 
-
 impl From<&str> for SectionRange {
     fn from(text: &str) -> Self {
         let mut parts = text.split('-');
@@ -25,7 +24,6 @@ impl From<&str> for SectionRange {
         SectionRange { start, end }
     }
 }
-
 
 fn parse_input() -> Vec<(SectionRange, SectionRange)> {
     let input_data = fs::read_to_string("data/input.txt").unwrap();
