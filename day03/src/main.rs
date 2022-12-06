@@ -28,11 +28,19 @@ fn split_line(line: &str) -> (&str, &str) {
     line.split_at(line_length / 2)
 }
 
-fn get_badge_scores(lines: std::str::Lines, item_scores: &HashMap<char, i32>) -> i32 {
+fn calculate_part_one(lines: &std::str::Lines, item_scores: &HashMap<char, i32>) -> i32 {
+    lines
+        .clone()
+        .map(split_line)
+        .map(|(left, right)| item_scores[&get_shared_item(&vec![left, right]).unwrap()])
+        .sum()
+}
+
+fn calculate_part_two(lines: &std::str::Lines, item_scores: &HashMap<char, i32>) -> i32 {
     let mut i = 0;
     let mut badges: Vec<char> = Vec::new();
 
-    let inputs = lines.map(|line| line.trim()).collect::<Vec<_>>();
+    let inputs = lines.clone().map(|line| line.trim()).collect::<Vec<_>>();
 
     while i < inputs.len() {
         let group_lines = &inputs[i..i + 3];
@@ -41,7 +49,7 @@ fn get_badge_scores(lines: std::str::Lines, item_scores: &HashMap<char, i32>) ->
         badges.push(group_badge.unwrap());
 
         i += 3;
-    };
+    }
 
     badges.iter().map(|badge| item_scores[&badge]).sum()
 }
@@ -52,15 +60,11 @@ fn main() {
 
     let item_scores = create_item_priority_scores();
 
-    let total_score: i32 = lines
-        .map(split_line)
-        .map(|(left, right)| item_scores[&get_shared_item(&vec![left, right]).unwrap()])
-        .sum();
+    let score_part_1 = calculate_part_one(&lines, &item_scores);
+    let score_part_2 = calculate_part_two(&lines, &item_scores);
 
-    let badge_scores = get_badge_scores(input_data.lines(), &item_scores);
-
-    println!("Total score: {}", total_score);
-    println!("Group badge scores: {}", badge_scores);
+    println!("Score part 1: {}", score_part_1);
+    println!("Score part 2: {}", score_part_2);
 }
 
 #[cfg(test)]
@@ -70,7 +74,7 @@ mod tests {
     use super::split_line;
 
     #[test]
-    fn split_lline_returns_two_halves() {
+    fn split_line_returns_two_halves() {
         let line = "aabbccdd";
         let (left, right) = split_line(line);
 
