@@ -32,7 +32,7 @@ fn get_badge_scores(lines: std::str::Lines, item_scores: &HashMap<char, i32>) ->
     let mut i = 0;
     let mut badges: Vec<char> = Vec::new();
 
-    let inputs = lines.collect::<Vec<_>>();
+    let inputs = lines.map(|line| line.trim()).collect::<Vec<_>>();
 
     while i < inputs.len() {
         let group_lines = &inputs[i..i + 3];
@@ -65,7 +65,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use crate::{create_item_priority_scores, get_shared_item, get_badge_scores};
+    use crate::{create_item_priority_scores, get_shared_item};
 
     use super::split_line;
 
@@ -104,23 +104,5 @@ mod tests {
         let scores = create_item_priority_scores();
 
         assert_eq!(scores.keys().len(), 52);
-    }
-
-    #[test]
-    fn get_group_badges_returns_correct_score() {
-        let lines = vec![
-            "vJrwpWtwJgWrhcsFMMfFFhFp",
-            "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
-            "PmmdzqPrVvPwwTWBwg",
-            "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
-            "ttgJtRGJQctTZtZT",
-            "CrZsJsPPZsGzwwsLwLmpwMDw",
-        ];
-
-        let item_scores = create_item_priority_scores();
-
-        let score = get_badge_scores(&lines, &item_scores);
-
-        assert_eq!(score, 70);
     }
 }
