@@ -7,5 +7,5 @@ edition = "2021"
 
 [workspace]
 members = [
-    "day06","day05","day04","day03","day02","day01"
+    "day07","day06","day05","day04","day03","day02","day01"
 ]
