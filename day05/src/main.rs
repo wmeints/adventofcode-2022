@@ -47,11 +47,11 @@ fn parse_moves() -> Vec<Move> {
     input_lines
         .map(|line| {
             let captures = move_pattern.captures(line).unwrap();
-            Move {
-                amount: captures[1].parse().unwrap(),
-                from: captures[2].parse().unwrap(),
-                to: captures[3].parse().unwrap(),
-            }
+            Move::new(
+                captures[1].parse().unwrap(),
+                captures[2].parse().unwrap(),
+                captures[3].parse().unwrap(),
+            )
         })
         .collect()
 }
