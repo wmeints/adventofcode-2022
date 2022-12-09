@@ -2,9 +2,10 @@ use crate::parser::Syntax;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct TreeNode {
-    name: String,
-    size: Option<i32>,
+    pub name: String,
+    pub size: Option<i32>,
     pub children: Vec<Rc<RefCell<TreeNode>>>,
     parent: Option<Rc<RefCell<TreeNode>>>,
 }
@@ -43,6 +44,21 @@ impl TreeNode {
         total
     }
 
+    pub fn flatten(&self) -> Vec<Rc<RefCell<TreeNode>>> {
+        let mut folders = Vec::new();
+
+        for child in &self.children {
+            if child.borrow().size.is_none() {
+                folders.push(Rc::clone(child));
+            }
+
+            let mut child_nodes= child.borrow_mut().flatten();
+            folders.append(&mut child_nodes);
+        }
+
+        folders
+    }
+
     fn add_child(&mut self, child: Rc<RefCell<TreeNode>>) {
         self.children.push(child);
     }
@@ -55,7 +71,7 @@ pub fn build_tree(commands: &Vec<Syntax>) -> Rc<RefCell<TreeNode>> {
     for command in commands {
         match command {
             Syntax::ChangeDirectory { target } => {
-                match target.as_str()  {
+                match target.as_str() {
                     ".." => {
                         let current_clone = Rc::clone(&current);
                         current = Rc::clone(current_clone.borrow().parent.as_ref().unwrap());

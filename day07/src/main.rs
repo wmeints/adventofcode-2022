@@ -26,6 +26,29 @@ fn main() {
         .iter().map(|node| Rc::clone(node).borrow().total_size())
         .sum();
 
-    println!("Matching folders total size: {}", deletable_nodes_sizes);
+    println!("Solution part 1: {}", deletable_nodes_sizes);
+
+    let total_size = tree.borrow().total_size();
+    let drive_size=  70_000_000;
+    let update_size = 30_000_000;
+    let unused_size = drive_size - total_size;
+    let required_size = update_size - unused_size;
+
+    let all_folders = tree.borrow().flatten();
+    
+    let mut candidate_folders: Vec<&Rc<RefCell<TreeNode>>> = all_folders.iter()
+        .filter(|folder| folder.borrow().total_size() > required_size)
+        .collect();
+
+        candidate_folders.sort_by(|a,b| {
+        let a_size = a.borrow().total_size();
+        let b_size = b.borrow().total_size();
+
+        a_size.cmp(&b_size)
+    });
+
+    let folder = candidate_folders.iter().next().unwrap();
+
+    println!("Solution part 2: {}", folder.borrow().total_size());
 }
 
